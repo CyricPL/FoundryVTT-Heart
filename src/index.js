@@ -265,7 +265,9 @@ if (module.hot) {
 
         if (ui.chat !== undefined) {
             ui.chat._lastId = null;
-            ui.chat.element.find('#chat-log').html("");
+            const chatEl = ui.chat.element instanceof HTMLElement ? ui.chat.element : ui.chat.element[0];
+            const chatLog = chatEl.querySelector('#chat-log');
+            if (chatLog) chatLog.innerHTML = "";
             ui.chat._renderBatch(ui.chat.element, CONFIG.ChatMessage.batchSize)
         }
     })()
