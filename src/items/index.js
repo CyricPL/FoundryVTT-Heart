@@ -264,9 +264,9 @@ function ItemSheetFactory(data) {
             return data.type;
         }
 
-        get template() {
-            return safe_data.template;
-        }
+        static PARTS = {
+            main: { template: safe_data.template },
+        };
 
         get img() {
             return safe_data.img;

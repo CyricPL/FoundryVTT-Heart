@@ -117,6 +117,8 @@ class HeartChatMessage extends ChatMessage {
 
     async getHTML() {
         const html = await super.getHTML();
+        // html is a jQuery object from ChatMessage.getHTML()
+        const el = html[0] || html;
 
         if (this.isRoll && this.isContentVisible) {
             const content = await this.rolls[0].render({
@@ -126,9 +128,12 @@ class HeartChatMessage extends ChatMessage {
                 showFalloutRollButton: this.showFalloutRollButton,
                 showClearStressButton: this.showClearStressButton,
             });
-            html.find('.message-content').find('.dice-roll').html(
-                $(content).children()
-            );
+            const diceRoll = el.querySelector('.message-content .dice-roll');
+            if (diceRoll) {
+                const temp = document.createElement('div');
+                temp.innerHTML = content;
+                diceRoll.replaceChildren(...temp.children);
+            }
 
             if (this.stressRoll && this.stressRoll !== this.rolls[0]) {
                 const stressContent = await this.stressRoll.render({
@@ -137,9 +142,10 @@ class HeartChatMessage extends ChatMessage {
                     showFalloutRollButton: this.showFalloutRollButton,
                     showClearStressButton: this.showClearStressButton,
                 });
-                html.append(
-                    $('<div class="message-content"></div>').append(stressContent)
-                );
+                const stressDiv = document.createElement('div');
+                stressDiv.classList.add('message-content');
+                stressDiv.innerHTML = stressContent;
+                el.appendChild(stressDiv);
             }
 
             if (this.falloutRoll && this.falloutRoll !== this.rolls[0]) {
@@ -147,16 +153,21 @@ class HeartChatMessage extends ChatMessage {
                     isPrivate: false,
                     showClearStressButton: this.showClearStressButton,
                 });
-                html.append(
-                    $('<div class="message-content"></div>').append(falloutContent)
-                );
+                const falloutDiv = document.createElement('div');
+                falloutDiv.classList.add('message-content');
+                falloutDiv.innerHTML = falloutContent;
+                el.appendChild(falloutDiv);
             }
         }
 
         if(this.isRollRequest) {
             const data = this.getFlag('heart', 'roll-request');
             const content = await renderTemplate('heart:applications/prepare-roll-request/chat-message.html', data);
-            html.append(content)
+            const temp = document.createElement('div');
+            temp.innerHTML = content;
+            while (temp.firstChild) {
+                el.appendChild(temp.firstChild);
+            }
         }
 
         return html;
@@ -181,40 +192,46 @@ async function _onDragStart(event) {
 }
 
 function activateListeners(html) {
+    // Handle both jQuery and HTMLElement (V13 compatibility)
+    const el = html instanceof HTMLElement ? html : html[0] || html;
 
-    html.on('click', 'form button', ev => {
-        ev.preventDefault();
+    el.addEventListener('click', (ev) => {
+        // Prevent default on form buttons
+        if (ev.target.closest('form button')) {
+            ev.preventDefault();
+        }
     });
 
-    html.on('click', 'form.roll-request [data-action=roll][data-character]', async (ev) => {
-        const button = $(ev.currentTarget);
-        const {
-            character
-        } = button.data();
+    el.addEventListener('click', async (ev) => {
+        const rollButton = ev.target.closest('form.roll-request [data-action=roll][data-character]');
+        if (rollButton) {
+            ev.preventDefault();
+            const character = rollButton.dataset.character;
+            const form = rollButton.closest('form.roll-request');
+            const data = new FormData(form);
 
-        const form = button.closest('form.roll-request');
-        const data = new FormData(form.get(0));
+            const roll = await game.heart.rolls.HeartRoll.build({
+                character: character,
+                difficulty: data.get('difficulty'),
+                skill: data.get('skill'),
+                domain: data.get('domain'),
+                mastery: data.get('mastery') === "on",
+                helpers: data.getAll('helper'),
+            });
 
-        const roll = await game.heart.rolls.HeartRoll.build({
-            character: character,
-            difficulty: data.get('difficulty'),
-            skill: data.get('skill'),
-            domain: data.get('domain'),
-            mastery: data.get('mastery') === "on",
-            helpers: data.getAll('helper'),
-        });
+            roll.toMessage({speaker: { actor: character }});
+        }
 
-        roll.toMessage({speaker: { actor: character }});
+        const viewButton = ev.target.closest('[data-item-id] [data-action=view]');
+        if (viewButton) {
+            ev.preventDefault();
+            const uuid = viewButton.closest('[data-item-id]').dataset.itemId;
+            const item = await fromUuid(uuid);
+            item.sheet.render(true);
+        }
     });
 
-    html.find('[data-item-id] [data-action=view]').click(async ev => {
-        const target = $(ev.currentTarget);
-        const uuid = target.closest('[data-item-id]').data('itemId');
-        const item = await fromUuid(uuid);
-        item.sheet.render(true);
-    });
-
-    dragDrop.bind(html.get(0));
+    dragDrop.bind(el);
 }
 
 // overridden to allow replacing "content anchors" with previews
@@ -225,8 +242,8 @@ class HeartTextEditor extends TextEditor {
         const [type, target, hash, name] = match.slice(1, 5);
         const doc = await fromUuid(target);
         if (doc && doc.documentName === "Item") {
-            const data = await doc.sheet.getData();
-            const innerHTML = Handlebars.partials[`heart:items/${doc.type}/preview.html`](data, {
+            const context = await doc.sheet._prepareContext({});
+            const innerHTML = Handlebars.partials[`heart:items/${doc.type}/preview.html`](context, {
                 allowedProtoProperties: {
                     uuid: true,
                     childrenTypes: true,

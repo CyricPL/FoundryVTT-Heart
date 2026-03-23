@@ -239,14 +239,17 @@ export default class HeartRoll extends Roll {
     }
 
     static activateListeners(html) {
-        html.on('click', '.heart-roll [data-action=roll-stress]', async function(ev) {
-            const target = $(ev.currentTarget);
-            const msgElement = target.closest('.chat-message');
-            const messageId = msgElement.data('messageId');
+        const el = html instanceof HTMLElement ? html : html[0] || html;
+        el.addEventListener('click', async function(ev) {
+            const button = ev.target.closest('.heart-roll [data-action=roll-stress]');
+            if (!button) return;
+
+            const msgElement = button.closest('.chat-message');
+            const messageId = msgElement.dataset.messageId;
             const msg = game.messages.get(messageId);
             const roll = msg.rolls[0];
-            
-            if (!roll._evaluated) await this.evaluate();
+
+            if (!roll._evaluated) await roll.evaluate();
             const stressRoll = await game.heart.rolls.StressRoll.build({
                 character: roll.options.character,
                 result: roll.result,

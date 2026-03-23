@@ -155,11 +155,14 @@ export default class FalloutRoll extends Roll {
     }
 
     static activateListeners(html) {
-      html.on('click', '.fallout-roll [data-action=clear-stress]', async function(ev) {
+      const el = html instanceof HTMLElement ? html : html[0] || html;
+      el.addEventListener('click', async function(ev) {
+        const button = ev.target.closest('.fallout-roll [data-action=clear-stress]');
+        if (!button) return;
+
         ev.preventDefault();
-        const target = $(ev.currentTarget);
-        const msgElement = target.closest('.chat-message');
-        const messageId = msgElement.data('messageId');
+        const msgElement = button.closest('.chat-message');
+        const messageId = msgElement.dataset.messageId;
         const msg = game.messages.get(messageId);
         const falloutRoll = msg.falloutRoll;
 
@@ -167,6 +170,6 @@ export default class FalloutRoll extends Roll {
 
         await ui.chat.updateMessage(msg, true);
         ui.chat.scrollBottom();
-    });
+      });
   }
 }

@@ -99,7 +99,8 @@ function initialise() {
     Handlebars.registerHelper('ordered-checkable', function (value, max) {
         let output = '';
         for (let i = 0; i < max; i++) {
-            output += `<a data-index="${i}" class="ordered-checkable-box${i < value ? ' checked' : ''}"></a>`;
+            const isChecked = i < value;
+            output += `<a data-action="toggle-checkable" data-index="${i}" class="ordered-checkable-box${isChecked ? ' checked' : ''}"></a>`;
         }
         return output;
     });
