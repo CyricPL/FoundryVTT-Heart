@@ -23,7 +23,7 @@ input.toggle-display
 
 .toggle-button
     font-family: 'MelmaCracked'
-    color: black
+    color: util.$black
     font-size: 1.5em
     text-align: center
     display: flex
@@ -52,7 +52,7 @@ input.toggle-display
 
         .dice-formula
             background: util.$black
-            color: white
+            color: util.$white
 
         .dice
             .part-header
@@ -168,7 +168,15 @@ input.toggle-display
             &.checked::after
                 background-image: linear-gradient(90deg, util.$red 0%, util.$red 100%)
 
+// V1 app wrapper
 .window-app .window-content
+    padding: 0
+
+    & > *
+        padding: 8px
+
+// V2 app wrapper
+.application .window-body
     padding: 0
 
     & > *
