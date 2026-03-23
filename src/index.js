@@ -78,15 +78,6 @@ function registerSettings() {
 }
 
 function initialise() {
-    const _compendium_opts = Compendium.defaultOptions;
-    _compendium_opts.template = 'heart:' + _compendium_opts.template;
-
-    Object.defineProperty(Compendium, 'defaultOptions', {
-        'get': function () {
-            return _compendium_opts;
-        }
-    });
-
     activateTemplates();
 
     game.heart = {
@@ -206,33 +197,36 @@ Hooks.once('init', initialise);
 
 Hooks.once('ready', function () {
     registerSettings();
-    new Promise(async function () {
+    (async function () {
         if (game.settings.get('heart', 'showStartupMessage')) {
-            let d = new Dialog({
-                title: game.i18n.format("heart.dialog.title(VERSION)", { VERSION: game.system.version }),
-                content: await renderTemplate('heart:templates/startup.html', { versions: Object.values(game.i18n.translations.heart.versions).sort((a, b) => a.version > b.version ? -1 : 1), version: game.system.version }),
-                buttons: {
-                    close: {
-                        icon: '<i class="fas fa-times"></i>',
+            const content = await renderTemplate('heart:templates/startup.html', { versions: Object.values(game.i18n.translations.heart.versions).sort((a, b) => a.version > b.version ? -1 : 1), version: game.system.version });
+            const result = await foundry.applications.api.DialogV2.wait({
+                window: {
+                    title: game.i18n.format("heart.dialog.title(VERSION)", { VERSION: game.system.version }),
+                },
+                content: content,
+                buttons: [
+                    {
+                        action: "close",
+                        icon: "fas fa-times",
                         label: game.i18n.localize("heart.dialog.skip"),
-                        callback: () => { }
                     },
-                    prevent: {
-                        icon: '<i class="fas fa-check"></i>',
+                    {
+                        action: "prevent",
+                        icon: "fas fa-check",
                         label: game.i18n.localize("heart.dialog.dont-show-again"),
-                        callback: () => game.settings.set('heart', 'showStartupMessage', false)
                     }
-                },
-                default: "skip",
-                render: html => {
+                ],
+                render: (event, html) => {
                     const tabs = new Tabs({ navSelector: ".tabs", contentSelector: ".content", initial: `v${game.system.version}` });
-                    tabs.bind(html[0]);
+                    tabs.bind(html);
                 },
-                close: html => { }
             });
-            d.render(true);
+            if (result === "prevent") {
+                game.settings.set('heart', 'showStartupMessage', false);
+            }
         }
-    });
+    })();
 });
 
 
