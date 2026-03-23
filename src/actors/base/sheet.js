@@ -158,7 +158,7 @@ export default class HeartActorSheet extends HeartSheetMixin(ActorSheet) {
         if (li.dataset.effectId) {
             const effect = this.actor.heart_effects.get(li.dataset.effectId);
             dragData.type = "ActiveEffect";
-            dragData.data = effect.data;
+            dragData.data = effect.toObject();
         }
 
         // Set data transfer

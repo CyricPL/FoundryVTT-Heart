@@ -192,7 +192,7 @@ export default class HeartItemSheet extends HeartSheetMixin(ItemSheet) {
 
     async _onDragStart(event) {
         const li = event.currentTarget;
-        if (event.target.classList.contains("entity-link")) return;
+        if (event.target.classList.contains("content-link")) return;
 
         let dragData = {
             parentItemId: this.item.id,

@@ -46,14 +46,14 @@ export default class extends HeartItemSheet {
             const groups = this.item.system.equipment_groups.filter(x => x !== groupId);
 
             const ids = this.item.children.filter(x => x.type === 'equipment' && x.system.group === groupId).map(item => item.id);
-            Dialog.confirm({
-              title: 'Confirm Deletion',
+            foundry.applications.api.DialogV2.confirm({
+              window: { title: 'Confirm Deletion' },
               content: 'Are you sure you want to delete this equipment group? It cannot be recovered.',
-              yes: () => {
+              yes: { callback: () => {
                 this.item.deleteChildren(ids);
                 this.render();
                 return this.item.update({'system.equipment_groups': groups});
-              }
+              }}
             });
 
         });

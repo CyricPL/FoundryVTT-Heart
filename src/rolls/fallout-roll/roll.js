@@ -103,17 +103,17 @@ export default class FalloutRoll extends Roll {
           let resistances = actor.system.resistances;
 
           if (this.result == 'major-fallout') {
-            Dialog.confirm({
-              title: 'Confirm Stress Reset',
+            foundry.applications.api.DialogV2.confirm({
+              window: { title: 'Confirm Stress Reset' },
               content: `Are you sure you want to reset ${actor.name}'s stress? This cannot be reversed.`,
-              yes: () => {
+              yes: { callback: () => {
                 Object.keys(resistances).forEach(key =>{Object.assign(resistances[key], { value: 0 });});
-            
+
                 let data = {};
                 data["system.resistances"] = resistances;
                 actor.update(data);
                 msg.showClearStressButton = false
-              }
+              }}
             });
           }
           if (this.result == 'minor-fallout' && stressType) {
@@ -139,17 +139,17 @@ export default class FalloutRoll extends Roll {
       });
 
       function removeMinorStress(stressType, actor, resistances) {
-        Dialog.confirm({
-          title: `Confirm Set ${stressType} to 0`,
+        foundry.applications.api.DialogV2.confirm({
+          window: { title: `Confirm Set ${stressType} to 0` },
           content: `Are you sure you want to reset ${actor.name}'s ${stressType} stress to 0? This cannot be reversed.`,
-          yes: () => {
+          yes: { callback: () => {
             resistances[stressType].value = 0;
 
             let data = {};
             data["system.resistances"] = resistances;
             actor.update(data);
             msg.showClearStressButton = false;
-          }
+          }}
         });
       }
     }
