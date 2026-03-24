@@ -235,13 +235,13 @@ if (fs.existsSync(tmp)) {
 };
 fs.mkdirSync(tmp);
 
-const paths = glob.globSync('./pack-data/**/*.yaml');
+const yamlPaths = glob.globSync('./pack-data/**/*.yaml');
 
 const manifest = fs.readFileSync('./dist/system.json');
 const json = JSON.parse(manifest);
 
 // Build YAML-sourced Item packs (classes, callings, tags, fallouts)
-const yamlPromises = paths.map((filename) => {
+const yamlPromises = yamlPaths.map((filename) => {
     const type = path.basename(filename).replace(/\.yaml$/, '');
     const content = fs.readFileSync(filename, 'utf8');
     const data = yaml.parse(content);
@@ -261,7 +261,7 @@ const yamlPromises = paths.map((filename) => {
     });
 
     if(json.packs.find((e) => e.name === type) === undefined) {
-        console.warn(`Adding ${type}.db to system.json`);
+        console.warn(`Adding ${type} to system.json`);
         json.packs.push(
             {
                 "name": type,
