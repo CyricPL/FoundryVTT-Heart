@@ -1,16 +1,16 @@
 name: Release
-run-name: ${{ github.actor }} is creating release ${{ inputs.version }}
+
+
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'The version to release this build as'
-        required: true
-        type: string
-        default: 0.X.Y
+  release:
+    types: [published]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20
@@ -35,3 +35,96 @@ jobs:
         with:
           artifacts: "./dist/system.json,./dist/heart.zip"
           tag: ${{ inputs.version }}
+      # 1. Check out the repo at the tagged commit
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Extract version from the release tag (strips leading 'v' if present)
+      - name: Get version from tag
+        id: version
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          VERSION="${TAG#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Version: $VERSION"
+
+      # 5. Update the version in foundryvtt.config.js before building
+      #    This ensures the built system.json has the correct version,
+      #    manifest URL, and download URL.
+      - name: Update version in config
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="${{ github.event.release.tag_name }}"
+          REPO="${{ github.repository }}"
+
+          # Update version in foundryvtt.config.js
+          # This sed handles common patterns - adjust if your config uses a different format
+          sed -i "s/\"version\": *\"[^\"]*\"/\"version\": \"${VERSION}\"/" foundryvtt.config.js || true
+          sed -i "s/version: *['\"][^'\"]*['\"]/version: '${VERSION}'/" foundryvtt.config.js || true
+
+      # 6. Build the project (Webpack compiles src/ → dist/)
+      - name: Build
+        run: npm run build
+
+      # 7. Verify system.json exists in dist/
+      - name: Verify build output
+        run: |
+          if [ ! -f dist/system.json ]; then
+            echo "ERROR: dist/system.json not found after build!"
+            echo "Contents of dist/:"
+            ls -la dist/ || echo "dist/ directory does not exist"
+            exit 1
+          fi
+          echo "system.json found. Contents:"
+          cat dist/system.json
+
+      # 8. Patch system.json with correct manifest and download URLs
+      #    manifest → points to the latest release's system.json (stable URL)
+      #    download → points to this specific release's zip
+      - name: Patch system.json URLs
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="${{ github.event.release.tag_name }}"
+          REPO="${{ github.repository }}"
+
+          # Use node to safely modify JSON
+          node -e "
+            const fs = require('fs');
+            const manifest = JSON.parse(fs.readFileSync('dist/system.json', 'utf8'));
+            manifest.version = '${VERSION}';
+            manifest.manifest = 'https://github.com/${REPO}/releases/latest/download/system.json';
+            manifest.download = 'https://github.com/${REPO}/releases/download/${TAG}/heart.zip';
+            fs.writeFileSync('dist/system.json', JSON.stringify(manifest, null, 2) + '\n');
+          "
+
+          echo "Patched system.json:"
+          cat dist/system.json
+
+      # 9. Create the zip archive from the dist/ folder contents
+      #    The zip should contain files at the root level (not inside a dist/ subfolder)
+      #    so that when extracted into Foundry's systems/heart/ folder, everything is correct.
+      - name: Create release zip
+        run: |
+          cd dist
+          zip -r ../heart.zip . -x ".*"
+          cd ..
+          echo "Created heart.zip ($(du -h heart.zip | cut -f1))"
+
+      # 10. Upload system.json and heart.zip to the GitHub release
+      - name: Upload release artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          gh release upload "$TAG" dist/system.json heart.zip --clobber
