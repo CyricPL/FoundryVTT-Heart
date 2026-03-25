@@ -115,10 +115,8 @@ class HeartChatMessage extends ChatMessage {
         return this.setFlag('heart', 'show-clear-stress-button', value);
     }
 
-    async getHTML() {
-        const html = await super.getHTML();
-        // html is a jQuery object from ChatMessage.getHTML()
-        const el = html[0] || html;
+    async renderHTML() {
+        const el = await super.renderHTML();
 
         if (this.isRoll && this.isContentVisible) {
             const content = await this.rolls[0].render({
@@ -162,7 +160,7 @@ class HeartChatMessage extends ChatMessage {
 
         if(this.isRollRequest) {
             const data = this.getFlag('heart', 'roll-request');
-            const content = await renderTemplate('heart:applications/prepare-roll-request/chat-message.html', data);
+            const content = await foundry.applications.handlebars.renderTemplate('heart:applications/prepare-roll-request/chat-message.html', data);
             const temp = document.createElement('div');
             temp.innerHTML = content;
             while (temp.firstChild) {
@@ -170,12 +168,12 @@ class HeartChatMessage extends ChatMessage {
             }
         }
 
-        return html;
+        return el;
     }
 }
 
 // applied to chat messages to allow dragging of previewed items
-const dragDrop = new DragDrop({
+const dragDrop = new (foundry.applications.ux.DragDrop.implementation)({
     dragSelector: ".item",
     dropSelector: null,
     permissions: { dragstart: true, drop: false },
@@ -235,7 +233,8 @@ function activateListeners(html) {
 }
 
 // overridden to allow replacing "content anchors" with previews
-class HeartTextEditor extends TextEditor {
+const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
+class HeartTextEditor extends TextEditorImpl {
     static async _createContentLink(match, {
         relativeTo
     } = {}) {
@@ -264,7 +263,7 @@ class HeartTextEditor extends TextEditor {
 export function initialise() {
     console.log('heart | Registering ChatMessage');
     CONFIG.ChatMessage.documentClass = HeartChatMessage;
-    TextEditor = HeartTextEditor;
+    foundry.applications.ux.TextEditor.implementation = HeartTextEditor;
 
     Hooks.once('renderChatLog', (app, html, data) => activateListeners(html));
     Hooks.once('renderChatPopout', (app, html, data) => activateListeners(html));

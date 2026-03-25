@@ -200,7 +200,7 @@ Hooks.once('ready', function () {
     registerSettings();
     (async function () {
         if (game.settings.get('heart', 'showStartupMessage')) {
-            const content = await renderTemplate('heart:templates/startup.html', { versions: Object.values(game.i18n.translations.heart.versions).sort((a, b) => a.version > b.version ? -1 : 1), version: game.system.version });
+            const content = await foundry.applications.handlebars.renderTemplate('heart:templates/startup.html', { versions: Object.values(game.i18n.translations.heart.versions).sort((a, b) => a.version > b.version ? -1 : 1), version: game.system.version });
             const result = await foundry.applications.api.DialogV2.wait({
                 window: {
                     title: game.i18n.format("heart.dialog.title(VERSION)", { VERSION: game.system.version }),
@@ -219,8 +219,9 @@ Hooks.once('ready', function () {
                     }
                 ],
                 render: (event, html) => {
-                    const tabs = new Tabs({ navSelector: ".tabs", contentSelector: ".content", initial: `v${game.system.version}` });
-                    tabs.bind(html);
+                    const el = html instanceof HTMLElement ? html : html[0] || html;
+                    const tabs = new (foundry.applications.ux.Tabs)({ navSelector: ".tabs", contentSelector: ".content", initial: `v${game.system.version}` });
+                    tabs.bind(el);
                 },
             });
             if (result === "prevent") {
