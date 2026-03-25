@@ -2,7 +2,9 @@ import './sheet.sass';
 import sheetHTML from './sheet.html';
 import HeartSheetMixin from '../../common/sheet';
 
-export default class HeartActorSheet extends HeartSheetMixin(foundry.applications.sheets.ActorSheetV2) {
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+
+export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2)) {
     static get type() { return 'base'; }
 
     static DEFAULT_OPTIONS = {

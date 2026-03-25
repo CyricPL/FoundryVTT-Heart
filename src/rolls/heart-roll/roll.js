@@ -226,13 +226,13 @@ export default class HeartRoll extends Roll {
         };
 
         // Render the roll display template
-        return renderTemplate(chatOptions.template, chatData);
+        return foundry.applications.handlebars.renderTemplate(chatOptions.template, chatData);
     }
 
     async getTooltip() {
         const parts = this.dice.map(d => d.getTooltipData());
         const kept = this.dice.findIndex(d => d.total == this.total);
-        return renderTemplate(this.constructor.TOOLTIP_TEMPLATE, {
+        return foundry.applications.handlebars.renderTemplate(this.constructor.TOOLTIP_TEMPLATE, {
             kept,
             parts 
         });

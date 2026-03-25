@@ -138,7 +138,7 @@ export default class StressRoll extends Roll {
         };
 
         // Render the roll display template
-        return renderTemplate(chatOptions.template, chatData);
+        return foundry.applications.handlebars.renderTemplate(chatOptions.template, chatData);
     }
 
     async takeStress(character, resistance='', ignoreProtection=false) {

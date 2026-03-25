@@ -90,7 +90,7 @@ export default class FalloutRoll extends Roll {
         };
 
         // Render the roll display template
-        const output = await renderTemplate(chatOptions.template, chatData);
+        const output = await foundry.applications.handlebars.renderTemplate(chatOptions.template, chatData);
         return output;
     }
 
