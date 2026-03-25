@@ -1,55 +1,25 @@
 name: Release
-
-
 on:
   release:
     types: [published]
-
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run build-prod
-      - run: npm run build-manifest -- ${{ inputs.version }}
-      - run: npm run build-packs
-      - run: npm run build-template
-      - name: Copy static files
-        run: |
-          cp LICENSE ./dist/
-          cp -r ./static/assets ./dist/assets
-          cp -r ./static/lang ./dist/lang
-      - name: Zip files
-        working-directory: ./dist
-        run: zip -r ./heart.zip ./*
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "./dist/system.json,./dist/heart.zip"
-          tag: ${{ inputs.version }}
       # 1. Check out the repo at the tagged commit
       - name: Checkout
         uses: actions/checkout@v4
-
       # 2. Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-
       # 3. Install dependencies
       - name: Install dependencies
         run: npm ci
-
       # 4. Extract version from the release tag (strips leading 'v' if present)
       - name: Get version from tag
         id: version
@@ -58,25 +28,19 @@ jobs:
           VERSION="${TAG#v}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Version: $VERSION"
-
-      # 5. Update the version in foundryvtt.config.js before building
-      #    This ensures the built system.json has the correct version,
-      #    manifest URL, and download URL.
-      - name: Update version in config
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          TAG="${{ github.event.release.tag_name }}"
-          REPO="${{ github.repository }}"
-
-          # Update version in foundryvtt.config.js
-          # This sed handles common patterns - adjust if your config uses a different format
-          sed -i "s/\"version\": *\"[^\"]*\"/\"version\": \"${VERSION}\"/" foundryvtt.config.js || true
-          sed -i "s/version: *['\"][^'\"]*['\"]/version: '${VERSION}'/" foundryvtt.config.js || true
-
-      # 6. Build the project (Webpack compiles src/ → dist/)
+      # 5. Build all artifacts (webpack, manifest, compendium packs, template)
       - name: Build
-        run: npm run build
-
+        run: |
+          npm run build-prod
+          npm run build-manifest -- ${{ steps.version.outputs.version }}
+          npm run build-packs
+          npm run build-template
+      # 6. Copy static files into dist/
+      - name: Copy static files
+        run: |
+          cp LICENSE ./dist/
+          cp -r ./static/assets ./dist/assets
+          cp -r ./static/lang ./dist/lang
       # 7. Verify system.json exists in dist/
       - name: Verify build output
         run: |
@@ -88,17 +52,12 @@ jobs:
           fi
           echo "system.json found. Contents:"
           cat dist/system.json
-
       # 8. Patch system.json with correct manifest and download URLs
-      #    manifest → points to the latest release's system.json (stable URL)
-      #    download → points to this specific release's zip
       - name: Patch system.json URLs
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           TAG="${{ github.event.release.tag_name }}"
           REPO="${{ github.repository }}"
-
-          # Use node to safely modify JSON
           node -e "
             const fs = require('fs');
             const manifest = JSON.parse(fs.readFileSync('dist/system.json', 'utf8'));
@@ -107,20 +66,15 @@ jobs:
             manifest.download = 'https://github.com/${REPO}/releases/download/${TAG}/heart.zip';
             fs.writeFileSync('dist/system.json', JSON.stringify(manifest, null, 2) + '\n');
           "
-
           echo "Patched system.json:"
           cat dist/system.json
-
-      # 9. Create the zip archive from the dist/ folder contents
-      #    The zip should contain files at the root level (not inside a dist/ subfolder)
-      #    so that when extracted into Foundry's systems/heart/ folder, everything is correct.
+      # 9. Create the zip archive from dist/ contents
       - name: Create release zip
         run: |
           cd dist
           zip -r ../heart.zip . -x ".*"
           cd ..
           echo "Created heart.zip ($(du -h heart.zip | cut -f1))"
-
       # 10. Upload system.json and heart.zip to the GitHub release
       - name: Upload release artifacts
         env:
