@@ -232,17 +232,15 @@ function activateListeners(html) {
     dragDrop.bind(el);
 }
 
-// overridden to allow replacing "content anchors" with previews
-const TextEditorImpl = foundry.applications.ux.TextEditor.implementation;
-class HeartTextEditor extends TextEditorImpl {
-    static async _createContentLink(match, {
-        relativeTo
-    } = {}) {
-        const [type, target, hash, name] = match.slice(1, 5);
-        const doc = await fromUuid(target);
-        if (doc && doc.documentName === "Item") {
-            const context = await doc.sheet._prepareContext({});
-            const innerHTML = Handlebars.partials[`heart:items/${doc.type}/preview.html`](context, {
+// Custom enricher to replace Item content links with rich previews
+async function _enrichItemPreview(match, options) {
+    const uuid = match[1];
+    const doc = await fromUuid(uuid);
+    if (doc && doc.documentName === "Item") {
+        const context = await doc.sheet._prepareContext({});
+        const partialName = `heart:items/${doc.type}/preview.html`;
+        if (Handlebars.partials[partialName]) {
+            const innerHTML = Handlebars.partials[partialName](context, {
                 allowedProtoProperties: {
                     uuid: true,
                     childrenTypes: true,
@@ -254,16 +252,20 @@ class HeartTextEditor extends TextEditorImpl {
             div.classList.add('heart', 'sheet');
             return div;
         }
-        return super._createContentLink(match, {
-            relativeTo
-        });
     }
+    return null;
 }
 
 export function initialise() {
     console.log('heart | Registering ChatMessage');
     CONFIG.ChatMessage.documentClass = HeartChatMessage;
-    foundry.applications.ux.TextEditor.implementation = HeartTextEditor;
+
+    // Register custom enricher for Item content links (V13-compatible replacement
+    // for the old TextEditor.implementation override)
+    CONFIG.TextEditor.enrichers.push({
+        pattern: /@UUID\[([^\]]+)\]/g,
+        enricher: _enrichItemPreview,
+    });
 
     Hooks.once('renderChatLog', (app, html, data) => activateListeners(html));
     Hooks.once('renderChatPopout', (app, html, data) => activateListeners(html));
