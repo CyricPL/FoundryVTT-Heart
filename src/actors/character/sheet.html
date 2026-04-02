@@ -32,7 +32,7 @@
     <button data-action="stress-roll"><span class="fas fa-dice"></span> {{localizeHeart "perform" "roll-stress"}}</button>
     <button data-action="fallout-roll"><span class="fas fa-dice"></span> {{localizeHeart "perform" "roll-fallout"}}</button>
 </div>
-<form class="heart sheet actor character {{cssClass}}" autocomplete="off">
+<div class="heart sheet actor character {{cssClass}}">
         <img class="profile" src="{{actor.img}}" title="{{actor.name}}" data-edit="img"/>
         <div class="section grid-3 resistances place-top">
             <div></div>
@@ -134,5 +134,5 @@
             {{/each}}
             </div>
         </div>
-</form>
+</div>
 </div>

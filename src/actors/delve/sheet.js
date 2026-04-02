@@ -7,7 +7,7 @@ export default class DelveSheet extends HeartActorSheet {
     static get type() { return Object.keys(template.Actor)[0]; }
 
     static PARTS = {
-        main: { template: sheetHTML.path },
+        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
     };
 
     get img() {

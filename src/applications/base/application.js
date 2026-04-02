@@ -14,7 +14,7 @@ export default class HeartApplication extends foundry.applications.api.Handlebar
     };
 
     static PARTS = {
-        main: { template: applicationHTML.path },
+        main: { template: applicationHTML.path, scrollable: [".heart.form"] },
     };
 
     static get formType() {
