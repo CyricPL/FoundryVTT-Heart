@@ -31,7 +31,7 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
     };
 
     static PARTS = {
-        main: { template: sheetHTML.path },
+        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
     };
 
     get img() {

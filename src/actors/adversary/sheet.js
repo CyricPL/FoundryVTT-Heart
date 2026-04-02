@@ -12,7 +12,7 @@ export default class AdversarySheet extends HeartActorSheet {
     };
 
     static PARTS = {
-        main: { template: sheetHTML.path },
+        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
     };
 
     async _onDropItemCreate(itemData) {

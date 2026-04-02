@@ -25,7 +25,7 @@ export default class extends HeartItemSheet {
     };
 
     static PARTS = {
-        main: { template: data.template },
+        main: { template: data.template, scrollable: [".heart.sheet"] },
     };
 
     get img() {

@@ -11,7 +11,7 @@ export default class BeatTrackerApplication extends HeartApplication {
   };
 
   static PARTS = {
-    main: { template: applicationHTML.path },
+    main: { template: applicationHTML.path, scrollable: [".heart.form"] },
   };
 
   static get formType() {

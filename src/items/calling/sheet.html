@@ -12,7 +12,7 @@
 </div>
 {{/inline}}
 
-<form class="heart sheet base Item calling {{cssClass}}" autocomplete="off">
+<div class="heart sheet base Item calling {{cssClass}}">
     <h1>
         {{#if (and editable (not item.isOwned))}}
         <input name="name" value="{{localizeHeart item.name}}"/>
@@ -84,4 +84,4 @@
     {{> beatSection beats=minorBeats type="minor"}}
     {{> beatSection beats=majorBeats type="major"}}
     {{> beatSection beats=zenithBeats type="zenith"}}
-</form>
+</div>

@@ -265,7 +265,7 @@ function ItemSheetFactory(data) {
         }
 
         static PARTS = {
-            main: { template: safe_data.template },
+            main: { template: safe_data.template, scrollable: [".heart.sheet"] },
         };
 
         get img() {
