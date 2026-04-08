@@ -18,7 +18,7 @@ export default class LandmarkSheet extends HeartActorSheet {
     };
 
     static PARTS = {
-        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
+        main: { template: sheetHTML.path, scrollable: [""] },
     };
 
     async _onDropItemCreate(itemData) {

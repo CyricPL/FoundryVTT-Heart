@@ -23,12 +23,20 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
         },
         window: {
             resizable: true,
+            controls: [
+                {
+                    action: "configureSheet",
+                    icon: "fa-solid fa-cog",
+                    label: "Sheet",
+                    ownership: "OWNER",
+                },
+            ],
         },
         dragDrop: [{ dragSelector: ".item", dropSelector: null }],
     };
 
     static PARTS = {
-        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
+        main: { template: sheetHTML.path, scrollable: [""] },
     };
 
     get default_img() {
