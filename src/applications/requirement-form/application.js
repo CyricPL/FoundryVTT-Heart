@@ -18,6 +18,12 @@ export default class RequirementApplication extends HeartApplication {
         return 'requirement'
     }
 
+    async _prepareContext() {
+        return {
+            options: this.options,
+        };
+    }
+
     static build({requirements, callback, type}) {
         new this({
             type,
