@@ -23,14 +23,6 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
         },
         window: {
             resizable: true,
-            controls: [
-                {
-                    action: "configureSheet",
-                    icon: "fa-solid fa-cog",
-                    label: "Sheet",
-                    ownership: "OWNER",
-                },
-            ],
         },
         dragDrop: [{ dragSelector: ".item", dropSelector: null }],
     };
