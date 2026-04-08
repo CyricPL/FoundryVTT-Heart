@@ -80,9 +80,17 @@ input.toggle-display
 
 .heart
     font-family: 'Alegreya', serif
+    color: util.$black
 
-    input
+    input, select, textarea
         font-family: inherit
+        background: transparent
+        color: inherit
+        border: none
+
+    select
+        background: util.$white
+        color: util.$black
 
     button
         font-family: 'Alegreya'
@@ -178,12 +186,9 @@ input.toggle-display
 // V2 app wrapper
 .application .window-body
     padding: 0
-    overflow: hidden
 
     & > *
         padding: 8px
-        height: 100%
-        overflow-y: auto
 
 .grid-2
     display: grid

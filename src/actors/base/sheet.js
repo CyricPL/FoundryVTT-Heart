@@ -27,11 +27,25 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
         },
         window: {
             resizable: true,
+            controls: [
+                {
+                    action: "configurePrototypeToken",
+                    icon: "fa-solid fa-user-circle",
+                    label: "TOKEN.TitlePrototype",
+                    ownership: "OWNER",
+                },
+                {
+                    action: "configureSheet",
+                    icon: "fa-solid fa-cog",
+                    label: "Sheet",
+                    ownership: "OWNER",
+                },
+            ],
         },
     };
 
     static PARTS = {
-        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
+        main: { template: sheetHTML.path, scrollable: [""] },
     };
 
     get img() {

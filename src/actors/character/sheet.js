@@ -14,7 +14,7 @@ export default class CharacterSheet extends HeartActorSheet {
     };
 
     static PARTS = {
-        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
+        main: { template: sheetHTML.path, scrollable: [""] },
     };
 
     // workaround for nested-children uuids not dragging properly
