@@ -8,7 +8,7 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
     static get type() { return 'base'; }
 
     static DEFAULT_OPTIONS = {
-        classes: ["heart", "sheet", "item"],
+        classes: ["heart", "item"],
         actions: {
             "add-child": HeartItemSheet._onAddChild,
             view: HeartItemSheet._onView,
@@ -23,6 +23,14 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
         },
         window: {
             resizable: true,
+            controls: [
+                {
+                    action: "configureSheet",
+                    icon: "fa-solid fa-cog",
+                    label: "SHEETS.ConfigureSheet",
+                    ownership: "OWNER",
+                },
+            ],
         },
         dragDrop: [{ dragSelector: ".item", dropSelector: null }],
     };
