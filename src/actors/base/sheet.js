@@ -8,7 +8,7 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
     static get type() { return 'base'; }
 
     static DEFAULT_OPTIONS = {
-        classes: ["heart", "sheet", "actor"],
+        classes: ["heart", "actor"],
         position: { width: 560, height: 600 },
         actions: {
             add: HeartActorSheet._onAdd,
@@ -27,6 +27,20 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
         },
         window: {
             resizable: true,
+            controls: [
+                {
+                    action: "configurePrototypeToken",
+                    icon: "fa-solid fa-user-circle",
+                    label: "TOKEN.TitlePrototype",
+                    ownership: "OWNER",
+                },
+                {
+                    action: "configureSheet",
+                    icon: "fa-solid fa-cog",
+                    label: "SHEETS.ConfigureSheet",
+                    ownership: "OWNER",
+                },
+            ],
         },
     };
 
