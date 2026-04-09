@@ -8,7 +8,7 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
     static get type() { return 'base'; }
 
     static DEFAULT_OPTIONS = {
-        classes: ["heart", "item"],
+        classes: ["heart", "sheet", "item"],
         actions: {
             "add-child": HeartItemSheet._onAddChild,
             view: HeartItemSheet._onView,

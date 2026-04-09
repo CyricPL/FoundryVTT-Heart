@@ -8,7 +8,7 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
     static get type() { return 'base'; }
 
     static DEFAULT_OPTIONS = {
-        classes: ["heart", "actor"],
+        classes: ["heart", "sheet", "actor"],
         position: { width: 560, height: 600 },
         actions: {
             add: HeartActorSheet._onAdd,
