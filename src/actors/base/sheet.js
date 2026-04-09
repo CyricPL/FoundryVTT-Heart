@@ -30,15 +30,13 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
             controls: [
                 {
                     action: "configurePrototypeToken",
-                    icon: "fa-solid fa-user-circle",
+                    icon: "fas fa-user-circle",
                     label: "TOKEN.TitlePrototype",
-                    ownership: "OWNER",
                 },
                 {
                     action: "configureSheet",
-                    icon: "fa-solid fa-cog",
+                    icon: "fas fa-cog",
                     label: "SHEETS.ConfigureSheet",
-                    ownership: "OWNER",
                 },
             ],
         },
