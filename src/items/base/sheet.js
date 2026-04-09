@@ -26,9 +26,8 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
             controls: [
                 {
                     action: "configureSheet",
-                    icon: "fa-solid fa-cog",
+                    icon: "fas fa-cog",
                     label: "SHEETS.ConfigureSheet",
-                    ownership: "OWNER",
                 },
             ],
         },

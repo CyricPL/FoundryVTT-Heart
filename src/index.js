@@ -233,6 +233,38 @@ Hooks.once('ready', function () {
 
 
 
+// Fallback: ensure header controls appear on actor and item sheets
+// (window.controls in DEFAULT_OPTIONS may be overridden by parent class merging)
+Hooks.on("getHeaderControls", function(app, controls) {
+    const classes = app.options?.classes ?? [];
+    if (!classes.includes("heart")) return;
+
+    if (classes.includes("actor")) {
+        if (!controls.some(c => c.action === "configurePrototypeToken")) {
+            controls.push({
+                action: "configurePrototypeToken",
+                icon: "fas fa-user-circle",
+                label: "TOKEN.TitlePrototype",
+            });
+        }
+        if (!controls.some(c => c.action === "configureSheet")) {
+            controls.push({
+                action: "configureSheet",
+                icon: "fas fa-cog",
+                label: "SHEETS.ConfigureSheet",
+            });
+        }
+    } else if (classes.includes("item")) {
+        if (!controls.some(c => c.action === "configureSheet")) {
+            controls.push({
+                action: "configureSheet",
+                icon: "fas fa-cog",
+                label: "SHEETS.ConfigureSheet",
+            });
+        }
+    }
+});
+
 Hooks.on('preCreateItem', function(document, data, options, userId) {
     document.updateSource({
         name: localizeHeart(document.name)
