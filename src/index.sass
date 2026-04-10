@@ -137,26 +137,33 @@ input.toggle-display
         $size: 14px
         flex: $size 0 0
         appearance: none
+        -webkit-appearance: none
         display: inline-block
         width: $size
         height: $size
         border: 3px solid util.$black
+        background-color: transparent
+        background-image: none
+        box-shadow: none
         margin: 0 2px
         box-sizing: content-box
 
         &:disabled:checked
+            background-color: transparent
             background-image: linear-gradient(90deg, util.$disabled-and-checked 0%, util.$disabled-and-checked 100%)
             background-size: $size - 2px $size - 2px
             background-position: center
             background-repeat: no-repeat
 
         &:checked
+            background-color: transparent
             background-image: linear-gradient(90deg, util.$black 0%, util.$black 100%)
             background-size: $size - 2px $size - 2px
             background-position: center
             background-repeat: no-repeat
 
         &:disabled
+            background-color: transparent
             background-image: linear-gradient(90deg, util.$disabled 0%, util.$disabled 100%)
             background-size: $size - 2px $size - 2px
             background-position: center
