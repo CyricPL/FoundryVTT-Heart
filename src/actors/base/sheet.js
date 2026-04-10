@@ -27,18 +27,6 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
         },
         window: {
             resizable: true,
-            controls: [
-                {
-                    action: "configurePrototypeToken",
-                    icon: "fas fa-circle-user",
-                    label: "TOKEN.TitlePrototype",
-                },
-                {
-                    action: "configureSheet",
-                    icon: "fas fa-gear",
-                    label: "SHEETS.ConfigureSheet",
-                },
-            ],
         },
     };
 
