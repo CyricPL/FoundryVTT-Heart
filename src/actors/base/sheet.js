@@ -6,6 +6,8 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicationMixin(foundry.applications.sheets.ActorSheetV2)) {
     static get type() { return 'base'; }
+    static MIN_WIDTH = 420;
+    static MIN_HEIGHT = 200;
 
     static DEFAULT_OPTIONS = {
         classes: ["heart", "sheet", "actor"],
