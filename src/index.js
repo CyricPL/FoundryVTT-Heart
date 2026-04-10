@@ -235,7 +235,7 @@ Hooks.once('ready', function () {
 
 // Fallback: ensure header controls appear on actor and item sheets
 // (window.controls in DEFAULT_OPTIONS may be overridden by parent class merging)
-Hooks.on("getHeaderControls", function(app, controls) {
+Hooks.on("getHeaderControlsApplicationV2", function(app, controls) {
     const classes = app.options?.classes ?? [];
     if (!classes.includes("heart")) return;
 
@@ -243,14 +243,14 @@ Hooks.on("getHeaderControls", function(app, controls) {
         if (!controls.some(c => c.action === "configurePrototypeToken")) {
             controls.push({
                 action: "configurePrototypeToken",
-                icon: "fas fa-user-circle",
+                icon: "fas fa-circle-user",
                 label: "TOKEN.TitlePrototype",
             });
         }
         if (!controls.some(c => c.action === "configureSheet")) {
             controls.push({
                 action: "configureSheet",
-                icon: "fas fa-cog",
+                icon: "fas fa-gear",
                 label: "SHEETS.ConfigureSheet",
             });
         }
@@ -258,7 +258,7 @@ Hooks.on("getHeaderControls", function(app, controls) {
         if (!controls.some(c => c.action === "configureSheet")) {
             controls.push({
                 action: "configureSheet",
-                icon: "fas fa-cog",
+                icon: "fas fa-gear",
                 label: "SHEETS.ConfigureSheet",
             });
         }
