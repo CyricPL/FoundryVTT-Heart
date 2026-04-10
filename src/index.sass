@@ -200,6 +200,25 @@ input.toggle-display
         flex-direction: column
         overflow: hidden
 
+// Minimum window size + higher-specificity checkbox overrides for Foundry v13
+// .application.heart beats .application used by core Foundry checkbox styles
+.application.heart
+    min-width: 420px
+    min-height: 150px
+
+    input[type=checkbox]
+        background-color: transparent !important
+        background-image: none !important
+
+        &:disabled:checked
+            background-image: linear-gradient(90deg, util.$disabled-and-checked 0%, util.$disabled-and-checked 100%) !important
+
+        &:checked
+            background-image: linear-gradient(90deg, util.$black 0%, util.$black 100%) !important
+
+        &:disabled
+            background-image: linear-gradient(90deg, util.$disabled 0%, util.$disabled 100%) !important
+
 .grid-2
     display: grid
     grid-template-columns: 1fr 1fr
