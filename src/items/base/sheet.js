@@ -26,7 +26,7 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
             controls: [
                 {
                     action: "configureSheet",
-                    icon: "fas fa-cog",
+                    icon: "fas fa-gear",
                     label: "SHEETS.ConfigureSheet",
                 },
             ],
