@@ -17,6 +17,7 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
             deactivate: HeartItemSheet._onDeactivate,
             complete: HeartItemSheet._onComplete,
             uncomplete: HeartItemSheet._onUncomplete,
+            "toggle-boolean": HeartItemSheet._onToggleBoolean,
         },
         form: {
             submitOnChange: true,
@@ -103,6 +104,13 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
         context.item = this.document;
 
         return context;
+    }
+
+    static _onToggleBoolean(event, target) {
+        event.preventDefault();
+        const path = target.dataset.path;
+        const current = foundry.utils.getProperty(this.document, path);
+        this.document.update({ [path]: !current });
     }
 
     static _onAddChild(event, target) {
