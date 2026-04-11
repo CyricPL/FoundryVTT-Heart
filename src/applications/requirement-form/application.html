@@ -9,7 +9,7 @@
 <label for="{{id}}" class="ordered-checkable-box"></label>
 {{/with}}
 {{else}}
-<select name="{{name}}" {{#if entry.isMany}}multiple{{/if}}>
+<select name="{{name}}" {{#if entry.isMany}}multiple size="{{entry.size}}"{{/if}}>
     {{#each entry.options as |label value|}}
     <option value="{{value}}">{{label}}</option>
     {{/each}}

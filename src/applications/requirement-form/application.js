@@ -19,17 +19,15 @@ export default class RequirementApplication extends HeartApplication {
     }
 
     async _prepareContext() {
+        const requirements = Object.entries(this.options.requirements).reduce((map, [key, req]) => {
+            map[key] = req.isMany
+                ? { ...req, size: Math.max(Object.keys(req.options).length, 2) }
+                : req;
+            return map;
+        }, {});
         return {
-            options: this.options,
+            options: { ...this.options, requirements },
         };
-    }
-
-    _onRender(context, options) {
-        super._onRender(context, options);
-        this.element.querySelectorAll('select[multiple]').forEach(select => {
-            select.size = Math.max(select.options.length, 2);
-        });
-        requestAnimationFrame(() => this.setPosition({ height: 'auto' }));
     }
 
     static build({requirements, callback, type}) {
