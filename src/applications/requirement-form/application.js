@@ -24,6 +24,13 @@ export default class RequirementApplication extends HeartApplication {
         };
     }
 
+    _onRender(context, options) {
+        super._onRender(context, options);
+        this.element.querySelectorAll('select[multiple]').forEach(select => {
+            select.size = Math.max(select.options.length, 2);
+        });
+    }
+
     static build({requirements, callback, type}) {
         new this({
             type,
