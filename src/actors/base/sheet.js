@@ -59,6 +59,12 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
         return context;
     }
 
+    async _onDropItemCreate(itemData) {
+        if (!itemData.system) itemData.system = {};
+        itemData.system.active = true;
+        return super._onDropItemCreate(itemData);
+    }
+
     static _onAdd(event, target) {
         const type = target.dataset.type;
         const itemData = target.dataset.data ? JSON.parse(target.dataset.data) : {};
