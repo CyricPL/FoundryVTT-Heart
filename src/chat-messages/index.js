@@ -200,6 +200,15 @@ function activateListeners(html) {
         }
     });
 
+    // Toggle dice tooltip when clicking the dice formula in heart roll cards
+    el.addEventListener('click', (ev) => {
+        const formula = ev.target.closest('.heart .dice-formula');
+        if (!formula) return;
+        const tooltip = formula.closest('.dice-result')?.querySelector('.dice-tooltip');
+        if (!tooltip) return;
+        tooltip.style.display = tooltip.style.display === 'none' ? '' : 'none';
+    });
+
     el.addEventListener('click', async (ev) => {
         const rollButton = ev.target.closest('form.roll-request [data-action=roll][data-character]');
         if (rollButton) {
