@@ -175,7 +175,7 @@ export default class LandmarkSheet extends HeartActorSheet {
         const item = {system: {die_size: service.die_size}};
 
         const roll = game.heart.rolls.ItemRoll.build({item});
-        await roll.evaluateSync();
+        await roll.evaluate();
 
         roll.toMessage({
             flavor: `${localizeHeart(hauntitem.name)} (<span class="item-type">${hauntitem.type}</span>)<div class="resistance-text">${localizeHeart(service.resistance)}</div>`,

@@ -91,7 +91,7 @@ export default class HeartActorSheet extends HeartSheetMixin(HandlebarsApplicati
         if (event.altKey && event.shiftKey) rollOptions = {'stepIncrease': false, 'stepDecrease': false};
 
         const roll = game.heart.rolls.ItemRoll.build({item}, {}, rollOptions);
-        roll.evaluateSync();
+        await roll.evaluate();
         roll.toMessage({
             flavor: `${localizeHeart(item.name)} (<span class="item-type">${item.type}</span>)`,
             speaker: {actor: this.actor.id}
