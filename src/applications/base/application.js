@@ -7,6 +7,9 @@ export default class HeartApplication extends foundry.applications.api.Handlebar
         window: {
             resizable: true,
         },
+        position: {
+            height: 'auto',
+        },
         actions: {
             cancel: HeartApplication._onCancel,
             submit: HeartApplication._onSubmit,
