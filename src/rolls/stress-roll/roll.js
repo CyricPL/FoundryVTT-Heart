@@ -1,7 +1,9 @@
 import chatTemplateHTML from './roll.html';
+import tooltipTemplateHTML from '../heart-roll/tooltip.html';
 
 export default class StressRoll extends Roll {
     static get CHAT_TEMPLATE() { return chatTemplateHTML.path; }
+    static get TOOLTIP_TEMPLATE() { return tooltipTemplateHTML.path; }
 
     static get requirements() {
         const characters = game.actors.filter(x => x.type === 'character');
@@ -98,6 +100,12 @@ export default class StressRoll extends Roll {
         }
 
         return new this(formula, data, options);
+    }
+
+    async getTooltip() {
+        const parts = this.dice.map(d => d.getTooltipData());
+        const kept = this.dice.findIndex(d => d.total === this.total);
+        return foundry.applications.handlebars.renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { kept, parts });
     }
 
     async render(chatOptions = {}) {
