@@ -8,6 +8,7 @@ export default class CharacterSheet extends HeartActorSheet {
         dragDrop: [{dragSelector: '.item', dropSelector: null}],
         actions: {
             "toggle-checkable": CharacterSheet._onToggleCheckable,
+            "toggle-boolean": CharacterSheet._onToggleBoolean,
             "prepare-request-roll": CharacterSheet._onPrepareRequestRoll,
             "fallout-roll": CharacterSheet._onFalloutRoll,
         },
@@ -95,6 +96,13 @@ export default class CharacterSheet extends HeartActorSheet {
             data[targetPath] = index + 1;
         }
         this.actor.update(data);
+    }
+
+    static _onToggleBoolean(event, target) {
+        event.preventDefault();
+        const path = target.dataset.path;
+        const current = foundry.utils.getProperty(this.actor, path);
+        this.actor.update({ [path]: !current });
     }
 
     static _onPrepareRequestRoll(event, target) {
