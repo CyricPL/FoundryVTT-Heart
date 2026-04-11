@@ -1,4 +1,5 @@
 import chatTemplateHTML from './roll.html';
+import tooltipTemplateHTML from '../heart-roll/tooltip.html';
 import './roll.sass';
 
 const fallout_results = {
@@ -57,6 +58,14 @@ export default class FalloutRoll extends Roll {
 
     get result() {
         return Object.keys(fallout_results).find(result => fallout_results[result](this.total, this.options.totalStress));
+    }
+
+    static get TOOLTIP_TEMPLATE() { return tooltipTemplateHTML.path; }
+
+    async getTooltip() {
+        const parts = this.dice.map(d => d.getTooltipData());
+        const kept = this.dice.findIndex(d => d.total === this.total);
+        return foundry.applications.handlebars.renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { kept, parts });
     }
 
     async render(chatOptions = {}) {
