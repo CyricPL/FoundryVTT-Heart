@@ -31,10 +31,10 @@ export default function HeartSheetMixin(baseClass) {
             return super.setPosition(position);
         }
 
-        async _onRender(context, options) {
-            await super._onRender?.(context, options);
-            // Foundry v13 overrides checkbox appearance via inline styles or high-specificity CSS.
-            // Set inline styles directly to ensure our custom checkbox look takes effect.
+        _onRender(context, options) {
+            super._onRender?.(context, options);
+            // Foundry v13 overrides checkbox appearance via CSS that beats !important.
+            // Inline styles set via setProperty('important') are the only reliable override.
             this.element.querySelectorAll('input[type="checkbox"]').forEach(el => {
                 el.style.setProperty('appearance', 'none', 'important');
                 el.style.setProperty('-webkit-appearance', 'none', 'important');

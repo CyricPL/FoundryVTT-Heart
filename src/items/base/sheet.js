@@ -28,7 +28,7 @@ export default class HeartItemSheet extends HeartSheetMixin(HandlebarsApplicatio
     };
 
     static PARTS = {
-        main: { template: sheetHTML.path, scrollable: [""] },
+        main: { template: sheetHTML.path, scrollable: [".heart.sheet"] },
     };
 
     get default_img() {
