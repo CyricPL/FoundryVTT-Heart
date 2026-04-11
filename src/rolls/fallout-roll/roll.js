@@ -116,10 +116,7 @@ export default class FalloutRoll extends Roll {
               }}
             });
           }
-          if (this.result == 'minor-fallout' && stressType) {
-            removeMinorStress(stressType, actor, resistances);
-          }
-          if (this.result == 'minor-fallout' && stressType == '') {
+          if (this.result == 'minor-fallout') {
             game.heart.applications.RequirementApplication.build({
               requirements: {
                   resistance: {
@@ -130,7 +127,6 @@ export default class FalloutRoll extends Roll {
                   }
               },
               callback: ({resistance}) => {
-
                 removeMinorStress(resistance, actor, resistances);
               },
               type: "clear-stress"
