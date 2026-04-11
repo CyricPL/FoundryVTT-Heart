@@ -95,59 +95,37 @@ export default class FalloutRoll extends Roll {
     }
 
     async clearStress(msg) {
-      return new Promise((resolve, reject) => {
-          let character = msg.rolls[0].options.character || msg.speaker.actor;
-          let stressType = msg.rolls[0].options.resistance || '';
-  
-          let actor = game.actors.get(character);
-          let resistances = actor.system.resistances;
+        let character = msg.rolls[0].options.character || msg.speaker.actor;
+        let actor = game.actors.get(character);
+        let resistances = actor.system.resistances;
 
-          if (this.result == 'major-fallout') {
-            foundry.applications.api.DialogV2.confirm({
-              window: { title: 'Confirm Stress Reset' },
-              content: `Are you sure you want to reset ${actor.name}'s stress? This cannot be reversed.`,
-              yes: { callback: () => {
-                Object.keys(resistances).forEach(key =>{Object.assign(resistances[key], { value: 0 });});
-
-                let data = {};
-                data["system.resistances"] = resistances;
-                actor.update(data);
-                msg.showClearStressButton = false
-              }}
-            });
-          }
-          if (this.result == 'minor-fallout') {
-            game.heart.applications.RequirementApplication.build({
-              requirements: {
-                  resistance: {
-                      options: game.heart.resistances.reduce((map, resistance) => {
-                          map[resistance] = game.i18n.localize(`heart.resistance.${resistance}`)
-                          return map;
-                      }, {})
-                  }
-              },
-              callback: ({resistance}) => {
-                removeMinorStress(resistance, actor, resistances);
-              },
-              type: "clear-stress"
-            });
-          }
-      });
-
-      function removeMinorStress(stressType, actor, resistances) {
-        foundry.applications.api.DialogV2.confirm({
-          window: { title: `Confirm Set ${stressType} to 0` },
-          content: `Are you sure you want to reset ${actor.name}'s ${stressType} stress to 0? This cannot be reversed.`,
-          yes: { callback: () => {
-            resistances[stressType].value = 0;
-
-            let data = {};
-            data["system.resistances"] = resistances;
-            actor.update(data);
+        if (this.result == 'major-fallout') {
+            Object.keys(resistances).forEach(key => { Object.assign(resistances[key], { value: 0 }); });
+            await actor.update({ "system.resistances": resistances });
             msg.showClearStressButton = false;
-          }}
-        });
-      }
+        }
+
+        if (this.result == 'minor-fallout') {
+            await new Promise(resolve => {
+                game.heart.applications.RequirementApplication.build({
+                    requirements: {
+                        resistance: {
+                            options: game.heart.resistances.reduce((map, resistance) => {
+                                map[resistance] = game.i18n.localize(`heart.resistance.${resistance}`)
+                                return map;
+                            }, {})
+                        }
+                    },
+                    callback: async ({resistance}) => {
+                        resistances[resistance].value = 0;
+                        await actor.update({ "system.resistances": resistances });
+                        msg.showClearStressButton = false;
+                        resolve();
+                    },
+                    type: "clear-stress"
+                });
+            });
+        }
     }
 
     static activateListeners(html) {
