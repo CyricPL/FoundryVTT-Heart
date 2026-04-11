@@ -11,7 +11,7 @@ export default class RequirementApplication extends HeartApplication {
     };
 
     static PARTS = {
-        main: { template: applicationHTML.path, scrollable: [".heart.form"] },
+        main: { template: applicationHTML.path },
     };
 
     static get formType() {
@@ -29,7 +29,7 @@ export default class RequirementApplication extends HeartApplication {
         this.element.querySelectorAll('select[multiple]').forEach(select => {
             select.size = Math.max(select.options.length, 2);
         });
-        this.setPosition({ height: 'auto' });
+        requestAnimationFrame(() => this.setPosition({ height: 'auto' }));
     }
 
     static build({requirements, callback, type}) {
