@@ -132,27 +132,31 @@ input.toggle-display
 
         &.checked::after
             background-image: linear-gradient(90deg, util.$black 0%, util.$black 100%)
-            background-size: $size - 4px $size - 4px
+            background-size: $size - 2px $size - 2px
             background-position: center
             background-repeat: no-repeat
+            box-shadow: inset 0 0 0 2px util.$white
 
         &.invert
             &::after, &.checked::after
                 border-color: util.$white
             &.checked::after
                 background-image: linear-gradient(90deg, util.$white 0%, util.$white 100%)
+                box-shadow: none
 
     input.hidden[type=checkbox]:checked + label.ordered-checkable-box
         $size: 14px
         &::after
             background-image: linear-gradient(90deg, util.$black 0%, util.$black 100%)
-            background-size: $size - 4px $size - 4px
+            background-size: $size - 2px $size - 2px
             background-position: center
             background-repeat: no-repeat
+            box-shadow: inset 0 0 0 2px util.$white
 
     input.hidden[type=checkbox]:checked + label.ordered-checkable-box.invert
         &::after
             background-image: linear-gradient(90deg, util.$white 0%, util.$white 100%)
+            box-shadow: none
 
     input[type=checkbox]
         $size: 14px
@@ -172,29 +176,33 @@ input.toggle-display
         &:disabled:checked
             background-color: transparent !important
             background-image: linear-gradient(90deg, util.$disabled-and-checked 0%, util.$disabled-and-checked 100%) !important
-            background-size: $size - 4px $size - 4px
+            background-size: $size - 2px $size - 2px
             background-position: center
             background-repeat: no-repeat
+            box-shadow: inset 0 0 0 2px util.$white !important
 
         &:checked
             background-color: transparent !important
             background-image: linear-gradient(90deg, util.$black 0%, util.$black 100%) !important
-            background-size: $size - 4px $size - 4px
+            background-size: $size - 2px $size - 2px
             background-position: center
             background-repeat: no-repeat
+            box-shadow: inset 0 0 0 2px util.$white !important
 
         &:disabled
             background-color: transparent !important
             background-image: linear-gradient(90deg, util.$disabled 0%, util.$disabled 100%) !important
-            background-size: $size - 4px $size - 4px
+            background-size: $size - 2px $size - 2px
             background-position: center
             background-repeat: no-repeat
+            box-shadow: inset 0 0 0 2px util.$white !important
             cursor: not-allowed
 
         &.invert
             border-color: util.$white
             &:checked
                 background-image: linear-gradient(90deg, util.$white 0%, util.$white 100%) !important
+                box-shadow: none !important
 
     .red
         .ordered-checkable-box
