@@ -11,7 +11,7 @@
                 "children": {}
             },
             "is_activatable": {
-                "active": false
+                "active": true
             },
             "is_completable": {
                 "complete": false
