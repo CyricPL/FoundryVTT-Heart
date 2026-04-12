@@ -9,11 +9,22 @@
 <label for="{{id}}" class="ordered-checkable-box"></label>
 {{/with}}
 {{else}}
-<select name="{{name}}" {{#if entry.isMany}}multiple size="{{entry.size}}"{{/if}}>
+{{#if entry.isMany}}
+<div class="options">
+    {{#each entry.options as |label value|}}
+    {{#with (randomID) as |id|}}
+    <input class="hidden" type="checkbox" id="{{id}}" name="{{name}}" value="{{value}}" />
+    <label for="{{id}}" class="option">{{label}}</label>
+    {{/with}}
+    {{/each}}
+</div>
+{{else}}
+<select name="{{name}}">
     {{#each entry.options as |label value|}}
     <option value="{{value}}">{{label}}</option>
     {{/each}}
 </select>
+{{/if}}
 {{/if}}
 {{/each}}
 {{/ "heart:applications/base/application.html"}}

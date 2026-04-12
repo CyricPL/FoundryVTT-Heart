@@ -18,28 +18,9 @@ export default class RequirementApplication extends HeartApplication {
         return 'requirement'
     }
 
-    _onRender(context, options) {
-        super._onRender(context, options);
-        // Force window to fit content after render
-        requestAnimationFrame(() => {
-            const body = this.element.querySelector('.window-body');
-            const header = this.element.querySelector('.window-header');
-            if (body) {
-                const height = (header?.offsetHeight ?? 0) + body.scrollHeight + 16;
-                this.setPosition({ height });
-            }
-        });
-    }
-
     async _prepareContext() {
-        const requirements = Object.entries(this.options.requirements).reduce((map, [key, req]) => {
-            map[key] = req.isMany
-                ? { ...req, size: Math.max(Object.keys(req.options).length, 2) }
-                : req;
-            return map;
-        }, {});
         return {
-            options: { ...this.options, requirements },
+            options: this.options,
         };
     }
 
