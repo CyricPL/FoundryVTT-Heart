@@ -135,6 +135,15 @@ function initialise() {
         return foundry.utils.randomID();
     });
 
+    Handlebars.registerHelper('stripHTML', function (html) {
+        if (!html) return '';
+        return String(html)
+            .replace(/<\/p>\s*<p>/gi, '\n')
+            .replace(/<br\s*\/?>/gi, '\n')
+            .replace(/<[^>]*>/g, '')
+            .trim();
+    });
+
     Handlebars.registerHelper('numEq', function (a, b) {
         return a == b;
     });

@@ -30,8 +30,12 @@
         flex-grow: 0
         text-align: center
 
-    .editor-content 
-        @include util.notepad
+    textarea
+        resize: vertical
+        width: 100%
+        min-height: 5em
+        border: 1px solid rgba(99, 0, 0, 0.3)
+        padding: 0.25em
 
     .item-list
         font-size: 1.2em

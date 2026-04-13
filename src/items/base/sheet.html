@@ -55,7 +55,7 @@
     {{/if}}
     </div>
 
-    {{editor (localizeHeart system.description) target="system.description" button=true editable=editable owner=owner}}
+    <textarea name="system.description" {{#unless editable}}disabled{{/unless}}>{{stripHTML system.description}}</textarea>
         
     {{> @partial-block }}
 {{/ "heart:common/sheet.html" }}
