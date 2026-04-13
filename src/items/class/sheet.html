@@ -22,7 +22,7 @@
     </h1>
     <div class="description">
         {{#if (and editable (not item.isOwned))}}
-        {{editor (localizeHeart system.description) target="system.description" button=true editable=editable owner=owner}}
+        <textarea name="system.description">{{stripHTML system.description}}</textarea>
         {{else}}
         {{{localizeHeart system.description}}}
         {{/if}}

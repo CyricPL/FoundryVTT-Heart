@@ -20,7 +20,7 @@
     </div>
     
     {{#if (and showTextboxesBelowItems description_path)}}
-    {{editor (lookup actor.system description_path) target=(join "." "system" description_path) button=true editable=editable owner=owner}}
+    <textarea name="{{join '.' 'system' description_path}}" {{#unless editable}}disabled{{/unless}}>{{stripHTML (lookup actor.system description_path)}}</textarea>
     {{/if}}
 </div>
 {{/inline}}
@@ -120,7 +120,7 @@
         
         <div class="section center wide notes">
             <h3>{{localizeHeart "character" "notes"}}</h3>
-            {{editor actor.system.notes target="system.notes" button=true editable=editable owner=owner}}
+            <textarea name="system.notes" {{#unless editable}}disabled{{/unless}}>{{stripHTML actor.system.notes}}</textarea>
         </div>
         
         <div class="section center wide inactive-items">
